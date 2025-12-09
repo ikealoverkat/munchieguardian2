@@ -11,7 +11,9 @@ kaplay({
 });
 
 loadRoot("./"); // ts for shipping on itch
+//note 2 self: all sprites must be loaded here
 loadSprite("logo", "ui/logo.png")
+loadSprite("munchieguardian", "sprites/munchieguardian.png")
 
 scene("game", gameScene);
 
