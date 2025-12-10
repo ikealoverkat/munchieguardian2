@@ -18,22 +18,23 @@ export function gameScene() {
     
     const clampOffset = 25;
     const munchieguardianDirectionVector = vec2(0, 0); //creates new vector that moves munchieguardian
-    munchieguardian.onUpdate(() => {      
-        munchieguardian.pos.x = clamp(munchieguardian.pos.x, clampOffset, width() - clampOffset);
-        munchieguardian.pos.y = clamp(munchieguardian.pos.y, clampOffset, height()- clampOffset); //clamps so the munchieguardian doesn't go off screen
-
         onKeyDown((key) => {
             if (key == "w") {munchieguardianDirectionVector.y = -1;}
             if (key == "a") {munchieguardianDirectionVector.x = -1;}
             if (key == "s") {munchieguardianDirectionVector.y = 1;}
             if (key == "d") {munchieguardianDirectionVector.x = 1;}
         })
-        onKeyRelease(() => {
-        munchieguardianDirectionVector.x = 0; munchieguardianDirectionVector.y = 0;
-        }) 
+        onKeyRelease((key) => {
+        if (key == "a" || key == "d") munchieguardianDirectionVector.x = 0;
+        if (key == "w" || key == "s") munchieguardianDirectionVector.y = 0;
+        }) //munchieguardian direction controlling code 
         
+    munchieguardian.onUpdate(() => {      
+        munchieguardian.pos.x = clamp(munchieguardian.pos.x, clampOffset, width() - clampOffset);
+        munchieguardian.pos.y = clamp(munchieguardian.pos.y, clampOffset, height()- clampOffset); //clamps so the munchieguardian doesn't go off screen
+
         const unitVector = munchieguardianDirectionVector.unit(); //normalizes the munchieguardian vector (makes the length 1) so diagonal movement isn't faster
-        munchieguardian.move(unitVector.scale(munchieguardian.speed)); //moves munchieguardian according to the vector and speed
+        munchieguardian.move(unitVector.scale(munchieguardian.speed)); //moves munchieguardian according to the vector and speed 
     });
 
     onClick(() => {
@@ -46,6 +47,17 @@ export function gameScene() {
             move(mousePos().sub(munchieguardian.pos).unit(), 700),
             rotate(mousePos().angle(munchieguardian.pos)),
             "bullet",
-        ])
-    }) //adds bullets on click
+        ]) //adds bullet on click
+    }) 
+
+    var chargeAttackAvailable = false;
+    loop(4, () => {
+        chargeAttackAvailable = true;
+        onKeyPress("e", () => {
+            if (chargeAttackAvailable == true) {
+                chargeAttackAvailable = false;
+                debug.log("charge attack fired!");
+            }
+        });        
+    })
 }

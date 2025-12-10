@@ -4,8 +4,8 @@ import "kaplay/global"; // uncomment if you want to use without the k. prefix
 import { gameScene } from "./scenes/game.js";
 
 kaplay({
-    width: 1280,
-    height: 960,
+    width: 1920,
+    height: 1080,
     background: "#000000",
     canvas: document.getElementById("canvas"),
 });
