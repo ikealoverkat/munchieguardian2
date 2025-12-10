@@ -15,6 +15,7 @@ loadRoot("./"); // ts for shipping on itch
 loadSprite("logo", "ui/logo.png")
 loadSprite("munchieguardian", "sprites/munchieguardian.png")
 loadSprite("bullet", "sprites/bullet.png")
+loadSprite("chargeAttackBullet", "sprites/chargeattack_bullet.png")
 
 scene("game", gameScene);
 

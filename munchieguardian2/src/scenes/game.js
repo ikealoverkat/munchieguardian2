@@ -56,20 +56,29 @@ export function gameScene() {
     loop(4, () => {
         onUpdate(() => {
             chargeAttackTime += timeBetweenFrames;
-            debug.log(chargeAttackTime);
-            debug.log(chargeAttackAvailable);
+            // debug.log(chargeAttackTime);
+            // debug.log(chargeAttackAvailable);
         })
-        // debug.log(chargeAttackTime);
-        // debug.log(chargeAttackAvailable);
         chargeAttackAvailable = true;        
         onKeyPress("e", () => {
             if (chargeAttackAvailable == true) {
                 chargeAttackAvailable = false;
                 chargeAttackTime = 0;
-                debug.log(chargeAttackTime);
-                debug.log(chargeAttackAvailable);
+                // debug.log(chargeAttackTime);
+                // debug.log(chargeAttackAvailable);
                 debug.log("charge attack fired!");
-            }
+                const chargeAttackBulletSize = 0.17;
+                const chargeAttackBullet = add([
+                    sprite("chargeAttackBullet"),
+                    scale(chargeAttackBulletSize, chargeAttackBulletSize),
+                    pos(munchieguardian.pos.x, munchieguardian.pos.y),
+                    anchor("center"),
+                    area(),
+                    move(mousePos().sub(munchieguardian.pos).unit(), 700),
+                    rotate(mousePos().angle(munchieguardian.pos)),
+                    "bullet",                    
+                ])
+            } //note to self: add bar with time until next charge attack like make one that fills up or something (maybe a circle? or smth that lights up when a charge attack is available idk)
         });        
-    })
+    }) //loop that lets player fire charge attacks every 4 seconds
 }
