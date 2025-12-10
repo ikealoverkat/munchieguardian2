@@ -50,12 +50,24 @@ export function gameScene() {
         ]) //adds bullet on click
     }) 
 
+    const timeBetweenFrames = 0.0166666666666666666666666666666666666666666667; //six seven
     var chargeAttackAvailable = false;
+    var chargeAttackTime; //time since the last charged attack was fired
     loop(4, () => {
-        chargeAttackAvailable = true;
+        onUpdate(() => {
+            chargeAttackTime += timeBetweenFrames;
+            debug.log(chargeAttackTime);
+            debug.log(chargeAttackAvailable);
+        })
+        // debug.log(chargeAttackTime);
+        // debug.log(chargeAttackAvailable);
+        chargeAttackAvailable = true;        
         onKeyPress("e", () => {
             if (chargeAttackAvailable == true) {
                 chargeAttackAvailable = false;
+                chargeAttackTime = 0;
+                debug.log(chargeAttackTime);
+                debug.log(chargeAttackAvailable);
                 debug.log("charge attack fired!");
             }
         });        
