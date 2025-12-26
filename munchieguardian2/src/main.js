@@ -1,10 +1,9 @@
 import kaplay from "kaplay";
 import "kaplay/global"; // uncomment if you want to use without the k. prefix
 
-loadRoot("./");
 
-import { gameScene } from "scenes/game.js";
-import { floor1Scene } from "scenes/floor1.js";
+import { gameScene } from "./scenes/game.js";
+import { floor1Scene } from "./scenes/floor1.js";
 
 kaplay({
     width: 1920,
@@ -36,4 +35,4 @@ scene("title", () => {
     ])
 })
 
-go("tutorial");
+go("floor1");

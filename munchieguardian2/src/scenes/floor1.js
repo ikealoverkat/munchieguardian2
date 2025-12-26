@@ -2,85 +2,33 @@ import kaplay from "kaplay";
 import "kaplay/global"; // uncomment if you want to use without the k. prefix
 
 export function floor1Scene() {
-    let munchieguardianX = width() / 2;
-    let munchieguardianY = height() / 2; 
-
     const munchieguardian = add([
         sprite("munchieguardian"),
         scale(0.25, 0.25),
-        pos(munchieguardianX, munchieguardianY), {
+        pos(10, 750), {
             speed: 350,
         },
         anchor("center"),
         area(),
+        animate(),
         "munchieguardian",
     ]);
+
+    // munchieguardian.tween(vec2(10, 750), vec2(150, 750), 1, (value) => (munchieguardian.pos = value));    
+    // munchieguardian.animate("pos", [vec2(10, 750), vec2(150, 750)], {
+    //     duration: 0.5,
+    //     interpolation: "spline",
+    //     direction: "forward",
+    //     loop: false,
+    // })
     
-    const clampOffset = 25;
-    const munchieguardianDirectionVector = vec2(0, 0); //creates new vector that moves munchieguardian
-        onKeyDown((key) => {
-            if (key == "w") {munchieguardianDirectionVector.y = -1;}
-            if (key == "a") {munchieguardianDirectionVector.x = -1;}
-            if (key == "s") {munchieguardianDirectionVector.y = 1;}
-            if (key == "d") {munchieguardianDirectionVector.x = 1;}
-        })
-        onKeyRelease((key) => {
-        if (key == "a" || key == "d") munchieguardianDirectionVector.x = 0;
-        if (key == "w" || key == "s") munchieguardianDirectionVector.y = 0;
-        }) //munchieguardian direction controlling code 
-        
-    munchieguardian.onUpdate(() => {      
-        munchieguardian.pos.x = clamp(munchieguardian.pos.x, clampOffset, width() - clampOffset);
-        munchieguardian.pos.y = clamp(munchieguardian.pos.y, clampOffset, height()- clampOffset); //clamps so the munchieguardian doesn't go off screen
+    tween(
+        vec2(10, 750),
+        vec2(200, 750),
+        0.5,
+        (v) => munchieguardian.pos = v,
+        (t) => (Math.sin((Math.PI * t) / 2))
+    );
 
-        const unitVector = munchieguardianDirectionVector.unit(); //normalizes the munchieguardian vector (makes the length 1) so diagonal movement isn't faster
-        munchieguardian.move(unitVector.scale(munchieguardian.speed)); //moves munchieguardian according to the vector and speed 
-    });
 
-    const bulletDamage = 1;
-    onClick(() => {
-        const bullet = add([
-            sprite("bullet"),
-            scale(0.1, 0.1),
-            pos(munchieguardian.pos.x, munchieguardian.pos.y),
-            anchor("center"),
-            area(),
-            move(mousePos().sub(munchieguardian.pos).unit(), 700),
-            rotate(mousePos().angle(munchieguardian.pos)),
-            "bullet",
-        ]) //adds bullet on click
-    }) 
-
-    const timeBetweenFrames = 0.0166666666666666666666666666666666666666666667; //six seven
-    var chargeAttackAvailable = false;
-    var chargeAttackTime; //time since the last charged attack was fired
-    const chargeAttackDamage = 2;
-    loop(4, () => {
-        onUpdate(() => {
-            chargeAttackTime += timeBetweenFrames;
-            // debug.log(chargeAttackTime);
-            // debug.log(chargeAttackAvailable);
-        })
-        chargeAttackAvailable = true;        
-        onKeyPress("e", () => {
-            if (chargeAttackAvailable == true) {
-                chargeAttackAvailable = false;
-                chargeAttackTime = 0;
-                // debug.log(chargeAttackTime);
-                // debug.log(chargeAttackAvailable);
-                debug.log("charge attack fired!");
-                const chargeAttackBulletSize = 0.17;
-                const chargeAttackBullet = add([
-                    sprite("chargeAttackBullet"),
-                    scale(chargeAttackBulletSize, chargeAttackBulletSize),
-                    pos(munchieguardian.pos.x, munchieguardian.pos.y),
-                    anchor("center"),
-                    area(),
-                    move(mousePos().sub(munchieguardian.pos).unit(), 700),
-                    rotate(mousePos().angle(munchieguardian.pos)),
-                    "bullet",                    
-                ])
-            } //note to self: add bar with time until next charge attack like make one that fills up or something (maybe a circle? or smth that lights up when a charge attack is available idk)
-        });        
-    }) //loop that lets player fire charge attacks every 4 seconds
 }
