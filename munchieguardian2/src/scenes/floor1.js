@@ -1,7 +1,7 @@
 import kaplay from "kaplay";
 import "kaplay/global"; // uncomment if you want to use without the k. prefix
 
-export function gameScene() {
+export function floor1Scene() {
     let munchieguardianX = width() / 2;
     let munchieguardianY = height() / 2; 
 
