@@ -11,9 +11,27 @@ export function floor2Scene() {
         })
     ])
 
-    
     setGravity(3000); //gravity = 3x jump force
-    
+    //to make the quests
+    add([
+        rect(500, 300), //y size is # of quests * a number for how long each of them are + starting size
+        //make it a slice9
+        anchor("top"),
+        pos(1600, 65),
+    ])
+    add([
+        text("Quests", {
+            size: 64,
+        }),
+        color(10, 10, 100),
+        anchor("center"),
+        pos(1600, 125)
+    ])
+
+    function addQuest() {
+        
+    }
+
     class levels {
         constructor(level) {
             this.obj = addLevel(level, {
@@ -204,6 +222,8 @@ export function floor2Scene() {
         })
     }
 
+    let munchieguardianGun;
+
     if (isGunUnlocked == false) {
         const gunBox = new collidingBox(300, 300, "gunBox");
 
@@ -250,12 +270,36 @@ export function floor2Scene() {
                             newDialogueBox(["munchieguardianBigSprite", "munchieguardianBigSprite", "munchieguardianBigSprite", "munchieguardianBigSprite"], ["Munchie Guardian", "Munchie Guardian", "Munchie Guardian", "null"], ["A gun...?", "Yo i'm scared... who left this here?", "Ok whatever we ball", "null"]);
                         })
                         //switch munchieguardian sprite
+                        //add gun
+                        munchieguardianGun = munchieguardian.add([
+                            sprite("munchieguardian"),
+                            anchor("left"),
+                            pos(20, 20),
+                            area(),
+                            "munchieguardianGun"
+                        ])
                     }) //e to pick up the gun (then the munchieguardian will switch sprites)
                 }   
             })
         }) //munchieguardian can break the box on collide!
     }
     
+    onClick(() => {
+        if (isGunUnlocked == true) {
+            let bulletDamage = 1;
+            const bullet = add([
+                sprite("bullet"),
+                scale(0.1),
+                pos(munchieguardian.pos.x + 100, munchieguardian.pos.y + 20),
+                anchor("center"),
+                area(),
+                move(mousePos().sub(munchieguardian.pos).unit(), 1000),
+                rotate(mousePos().angle(munchieguardian.pos)),
+                "bullet",
+            ]) //adds bullet on click
+        }
+    })
+
 
     function newDialogueBox(characterSprites, characterName, dialogue) {
         //all arguments are arrays

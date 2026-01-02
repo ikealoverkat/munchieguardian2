@@ -26,6 +26,7 @@ loadSprite("chargeAttackBullet", "sprites/chargeattack_bullet.png")
 loadSprite("munchieguardianBigSprite", "sprites/munchieguardianBigSprite.png")
 setLayers(["bg", "obj", "foreground", "ui"], "obj");
 window.isGunUnlocked = false;
+window.quests = ["defeat the enemies in the tower", "free all the munchies"]
 
 scene("floor1", floor1Scene);
 
