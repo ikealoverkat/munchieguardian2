@@ -14,7 +14,37 @@ export function floor2Scene() {
     
     setGravity(3000); //gravity = 3x jump force
     
-    makeLevel([
+    class levels {
+        constructor(level) {
+            this.obj = addLevel(level, {
+                tileWidth: 64,
+                tileHeight: 64,
+                tiles: {
+                    "=": () => [
+                        rect(64, 64),
+                        area(),
+                        body({isStatic: true}),
+                        color(0, 10, 100),
+                    ], //floor tile
+                    "-": () => [
+                        rect(64, 64),
+                        area(),
+                        body({isStatic: true}),
+                        color(100, 50, 10),
+                    ], //platform box
+                    "^": () => [
+                        rect(64, 64),
+                        opacity(0),
+                        area(),
+                        body({isStatic: true}),
+                        "spike",
+                    ] //spike
+                }
+            })     
+        }
+    }
+
+    let levelOne = new levels([
             "                              ",
             "                              ",
             "                              ",
@@ -33,8 +63,54 @@ export function floor2Scene() {
             "=====================     ====",
             "=====================     ====",
             "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
-    ]);
+    ])
 
+    //         "                              ",
+    //         "                              ",
+    //         "                              ",
+    //         "                              ",
+    //         "                              ",
+    //         "                              ",
+    //         "                              ",
+    //         "                              ",
+    //         "                              ",
+    //         "                              ",
+    //         "                              ",
+    //         "                              ",
+    //         "           ---                ",
+    //         "           --- --           ",
+    //         "=====================     ====",
+    //         "=====================     ====",
+    //         "=====================     ====",
+    //         "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+    // ]);
+    // function makeLevel(level) {
+    //     addLevel(level, {
+    //         tileWidth: 64,
+    //         tileHeight: 64,
+    //         tiles: {
+    //             "=": () => [
+    //                 rect(64, 64),
+    //                 area(),
+    //                 body({isStatic: true}),
+    //                 color(0, 10, 100),
+    //             ], //floor tile
+    //             "-": () => [
+    //                 rect(64, 64),
+    //                 area(),
+    //                 body({isStatic: true}),
+    //                 color(100, 50, 10),
+    //             ], //platform box
+    //             "^": () => [
+    //                 rect(64, 64),
+    //                 opacity(0),
+    //                 area(),
+    //                 body({isStatic: true}),
+    //                 "spike",
+    //             ] //spike
+    //         }
+    //     })
+    // } 
 
     let munchieguardianState = "idle";
 
@@ -56,6 +132,7 @@ export function floor2Scene() {
     //     setCamPos(munchieguardian.pos);
     // })
 
+//guardian movement
     tween(
         vec2(10, 800),
         vec2(200, 800),
@@ -131,34 +208,6 @@ export function floor2Scene() {
     // onUpdate(() => {
     //     debug.log(munchieguardianState);
     // })
-
-    function makeLevel(level) {
-        addLevel(level, {
-            tileWidth: 64,
-            tileHeight: 64,
-            tiles: {
-                "=": () => [
-                    rect(64, 64),
-                    area(),
-                    body({isStatic: true}),
-                    color(0, 10, 100),
-                ], //floor tile
-                "-": () => [
-                    rect(64, 64),
-                    area(),
-                    body({isStatic: true}),
-                    color(100, 50, 10),
-                ], //platform box
-                "^": () => [
-                    rect(64, 64),
-                    opacity(0),
-                    area(),
-                    body({isStatic: true}),
-                    "spike",
-                ] //spike
-            }
-        })
-    } 
 
     onCollide("munchieguardian", "spike", () => {
         shake(7);
