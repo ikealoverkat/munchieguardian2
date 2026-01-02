@@ -44,7 +44,7 @@ export function floor2Scene() {
         }
     }
 
-    let levelOne = new levels([
+    const levelOne = new levels([
             "                              ",
             "                              ",
             "                              ",
@@ -64,53 +64,6 @@ export function floor2Scene() {
             "=====================     ====",
             "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
     ])
-
-    //         "                              ",
-    //         "                              ",
-    //         "                              ",
-    //         "                              ",
-    //         "                              ",
-    //         "                              ",
-    //         "                              ",
-    //         "                              ",
-    //         "                              ",
-    //         "                              ",
-    //         "                              ",
-    //         "                              ",
-    //         "           ---                ",
-    //         "           --- --           ",
-    //         "=====================     ====",
-    //         "=====================     ====",
-    //         "=====================     ====",
-    //         "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
-    // ]);
-    // function makeLevel(level) {
-    //     addLevel(level, {
-    //         tileWidth: 64,
-    //         tileHeight: 64,
-    //         tiles: {
-    //             "=": () => [
-    //                 rect(64, 64),
-    //                 area(),
-    //                 body({isStatic: true}),
-    //                 color(0, 10, 100),
-    //             ], //floor tile
-    //             "-": () => [
-    //                 rect(64, 64),
-    //                 area(),
-    //                 body({isStatic: true}),
-    //                 color(100, 50, 10),
-    //             ], //platform box
-    //             "^": () => [
-    //                 rect(64, 64),
-    //                 opacity(0),
-    //                 area(),
-    //                 body({isStatic: true}),
-    //                 "spike",
-    //             ] //spike
-    //         }
-    //     })
-    // } 
 
     let munchieguardianState = "idle";
 
@@ -251,57 +204,58 @@ export function floor2Scene() {
         })
     }
 
-    const gunBox = new collidingBox(300, 300, "gunBox");
+    if (isGunUnlocked == false) {
+        const gunBox = new collidingBox(300, 300, "gunBox");
 
-    let isGunUnlocked = false;
-
-    onCollide("munchieguardian", "gunBox", () => {
-        onClick(() => {
-            if(isGunUnlocked == false) {
-                const gunLoot = add([
-                    rect(80, 64),
-                    pos(gunBox.obj.pos),
-                    color(255, 255, 255),
-                    scale(1),
-                    anchor("center"),
-                    area(),
-                    body(),
-                    "gunLoot",
-                ])            
-                destroyAll("gunBox");
-                munchieguardianState = "attacking";
-                wait(0.5, () => {
-                    munchieguardianState = "idle";
-                }) 
-                const destroyedBoxParticleEmitter = add([
-                    pos(gunLoot.pos.x, gunLoot.pos.y),
-                    particles({
-                        max: 100,
-                        scale: 3,
-                        speed: [75, 100],
-                        lifeTime: [0.75, 1.0],
-                        opacities: [1.0, 0.0],
-                        color: gunBox.color,
-                    }, {
-                        direction: -90,
-                        spread: 45,
-                    })
-                ])
-                destroyedBoxParticleEmitter.emit(40);
-                tween(vec2(0.2), vec2(1), 0.5, (v) => (gunLoot.scale = v), easings.easeOutElastic)
-                isGunUnlocked = true;
-                //do some destruction particles and then spawn a gun
-                addInteractiveSign("munchieguardian", "gunLoot", gunLoot.pos.x, gunLoot.pos.y);
-                onKeyPress("e", () => {
-                    destroy(gunLoot);
-                    wait(0.02, () => {
-                        newDialogueBox(["munchieguardianBigSprite", "munchieguardianBigSprite", "munchieguardianBigSprite", "munchieguardianBigSprite"], ["Munchie Guardian", "Munchie Guardian", "Munchie Guardian", "null"], ["A gun...?", "Yo i'm scared... who left this here?", "Ok whatever we ball", "null"]);
-                    })
-                    //switch munchieguardian sprite
-                }) //e to pick up the gun (then the munchieguardian will switch sprites)
-            }   
-        })
-    }) //munchieguardian can break the box on collide!
+        onCollide("munchieguardian", "gunBox", () => {
+            onClick(() => {
+                if(isGunUnlocked == false) {
+                    const gunLoot = add([
+                        rect(80, 64),
+                        pos(gunBox.obj.pos),
+                        color(255, 255, 255),
+                        scale(1),
+                        anchor("center"),
+                        area(),
+                        body(),
+                        "gunLoot",
+                    ])            
+                    destroyAll("gunBox");
+                    munchieguardianState = "attacking";
+                    wait(0.5, () => {
+                        munchieguardianState = "idle";
+                    }) 
+                    const destroyedBoxParticleEmitter = add([
+                        pos(gunLoot.pos.x, gunLoot.pos.y),
+                        particles({
+                            max: 100,
+                            scale: 3,
+                            speed: [75, 100],
+                            lifeTime: [0.75, 1.0],
+                            opacities: [1.0, 0.0],
+                            color: gunBox.color,
+                        }, {
+                            direction: -90,
+                            spread: 45,
+                        })
+                    ])
+                    destroyedBoxParticleEmitter.emit(40);
+                    tween(vec2(0.2), vec2(1), 0.5, (v) => (gunLoot.scale = v), easings.easeOutElastic)
+                    isGunUnlocked = true;
+                    //do some destruction particles and then spawn a gun
+                    addInteractiveSign("munchieguardian", "gunLoot", gunLoot.pos.x, gunLoot.pos.y);
+                    onKeyPress("e", () => {
+                        destroy(gunLoot);
+                        wait(0.02, () => {
+                            newDialogueBox(["munchieguardianBigSprite", "munchieguardianBigSprite", "munchieguardianBigSprite", "munchieguardianBigSprite"], ["Munchie Guardian", "Munchie Guardian", "Munchie Guardian", "null"], ["A gun...?", "Yo i'm scared... who left this here?", "Ok whatever we ball", "null"]);
+                        })
+                        //switch munchieguardian sprite
+                    }) //e to pick up the gun (then the munchieguardian will switch sprites)
+                }   
+            })
+        }) //munchieguardian can break the box on collide!
+    }
+    
 
     function newDialogueBox(characterSprites, characterName, dialogue) {
         //all arguments are arrays
@@ -314,13 +268,14 @@ export function floor2Scene() {
         const onscreenCharacterSprite = add([
             sprite("munchieguardianBigSprite"),
             pos(200, 200),
-            // layer("ui"),
+            layer("ui"),
         ])
 
         const dialogueBox = add([
             rect(width() - 200, 300),
             pos(width()/2, height() - 200),
             anchor("center"),
+            layer("ui"),
         ]) 
 
         const dialogueText = dialogueBox.add([
@@ -331,6 +286,7 @@ export function floor2Scene() {
             }),
             pos(-750, -40),
             color(10, 10, 100),
+            layer("ui"),
         ])
 
         const dialogueCharacterName = add([
@@ -341,6 +297,7 @@ export function floor2Scene() {
             pos(dialogueBox.pos.x - 750, dialogueBox.pos.y - 100),
             color(10, 10, 100),
             z(100),
+            layer("ui"),
         ])
 
         onClick(() => {
@@ -357,11 +314,5 @@ export function floor2Scene() {
                 curText++;
             } 
         })
-
-        //dialogueText.text = dialogueArray[curText];
-        //if dialogue istyping = true make the text dialoguearray
-        //wait 1s, stop typing (dialogueistyping = false)
-        //dialogue text 
-        // 
     }
 }

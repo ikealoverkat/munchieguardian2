@@ -24,8 +24,8 @@ loadSprite("chargeAttackBullet", "sprites/chargeattack_bullet.png")
 
 //big sprites
 loadSprite("munchieguardianBigSprite", "sprites/munchieguardianBigSprite.png")
-
-// setLayers(["bg", "obj", "foreground", "ui"], "obj");
+setLayers(["bg", "obj", "foreground", "ui"], "obj");
+window.isGunUnlocked = false;
 
 scene("floor1", floor1Scene);
 
