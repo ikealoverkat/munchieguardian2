@@ -1,7 +1,7 @@
 import kaplay from "kaplay";
 import "kaplay/global"; // uncomment if you want to use without the k. prefix
 
-export function floor1Scene() {
+export function floor2Scene() {
     setGravity(3000); //gravity = 3x jump force
     
     makeLevel([
@@ -16,13 +16,17 @@ export function floor1Scene() {
             "                              ",
             "                              ",
             "                              ",
-            "                 ===          ",
-            "           ===                ",
             "                              ",
-            "==============================",
-            "==============================",
-            "==============================",
+            "           ---                ",
+            "         b --- --           ",
+            "=====================   ======",
+            "=====================   ======",
+            "=====================   ======",
     ]);
+
+    makeCollidingBox(300, 300, "gunBox");
+
+    let munchieguardianState = "idle";
 
     const munchieguardian = add([
         sprite("munchieguardian"),
@@ -77,6 +81,7 @@ export function floor1Scene() {
     }) //move controls
     
     onKeyPress("shift", () => {
+        munchieguardianState = "dashing";
         if (munchieguardianDirection == RIGHT) {
             tween(munchieguardian.pos.x, munchieguardian.pos.x + 200, 0.2, (v) => (munchieguardian.pos.x = v), easings.easeInOutCirc)
             // munchieguardian.move(20*munchieguardian.speed, 15);
@@ -99,8 +104,16 @@ export function floor1Scene() {
             }    
             );
         } //dash trail
-
     }) //dash
+    onKeyRelease("shift", () => {
+        wait(0.2, () => {
+            munchieguardianState = "idle";
+        })
+    })//dash over
+
+    // onUpdate(() => {
+    //     debug.log(munchieguardianState);
+    // })
 
     function makeLevel(level) {
         addLevel(level, {
@@ -113,8 +126,31 @@ export function floor1Scene() {
                     body({isStatic: true}),
                     color(0, 10, 100),
                 ], //floor tile
+                "-": () => [
+                    rect(64, 64),
+                    area(),
+                    body({isStatic: true}),
+                    color(100, 50, 10),
+                ], //platform box
             }
         })
     } 
 
+    function makeCollidingBox(boxX, boxY, boxTag) {
+        add([
+            rect(72, 72),
+            pos(boxX, boxY),
+            area(),
+            body(),
+            color(175, 80, 30),
+            boxTag,       
+        ])
+    }
+
+    onCollide("munchieguardian", "gunBox", () => {
+        if (munchieguardianState == "dashing") {
+            destroyAll("gunBox");
+        }
+        destroyAll("tile")
+    })
 }

@@ -4,6 +4,7 @@ import "kaplay/global"; // uncomment if you want to use without the k. prefix
 
 import { gameScene } from "./scenes/game.js";
 import { floor1Scene } from "./scenes/floor1.js";
+import { floor2Scene } from "./scenes/floor2.js";
 
 kaplay({
     width: 1920,
@@ -19,8 +20,9 @@ loadSprite("munchieguardian", "sprites/munchieguardian.png")
 loadSprite("bullet", "sprites/bullet.png")
 loadSprite("chargeAttackBullet", "sprites/chargeattack_bullet.png")
 
-
 scene("floor1", floor1Scene);
+
+scene("floor2", floor2Scene);
 
 scene("game", gameScene);
 
@@ -35,4 +37,4 @@ scene("title", () => {
     ])
 })
 
-go("floor1");
+go("floor2");
