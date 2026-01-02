@@ -2,6 +2,16 @@ import kaplay from "kaplay";
 import "kaplay/global"; // uncomment if you want to use without the k. prefix
 
 export function floor2Scene() {
+    add([
+        text("FLOOR 2", {size: 48}),
+        pos(20, 20),
+        opacity(1),
+        lifespan(2, {
+            fade: 0.75,
+        })
+    ])
+
+    
     setGravity(3000); //gravity = 3x jump force
     
     makeLevel([
@@ -18,13 +28,13 @@ export function floor2Scene() {
             "                              ",
             "                              ",
             "           ---                ",
-            "         b --- --           ",
-            "=====================   ======",
-            "=====================   ======",
-            "=====================   ======",
+            "           --- --           ",
+            "=====================     ====",
+            "=====================     ====",
+            "=====================     ====",
+            "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
     ]);
 
-    makeCollidingBox(300, 300, "gunBox");
 
     let munchieguardianState = "idle";
 
@@ -59,6 +69,7 @@ export function floor2Scene() {
 
     munchieguardian.onGround(() => {
         jumpsLeft = 2;
+        munchieguardianState = "idle";
     }); //double jump stuff
 
     onKeyPressRepeat(["w", "up", "space"], () => {
@@ -72,14 +83,20 @@ export function floor2Scene() {
         munchieguardian.move(munchieguardian.speed, 0);
         munchieguardian.scale = vec2(0.25, 0.25);
         munchieguardianDirection = RIGHT;
+        munchieguardianState = "moving"
     })
 
     onKeyDown(["a", "left"], () => {
         munchieguardian.move(-munchieguardian.speed, 0);
         munchieguardian.scale = vec2(-0.25, 0.25);
         munchieguardianDirection = LEFT;
+        munchieguardianState = "moving";
     }) //move controls
     
+    onUpdate(() => {
+        munchieguardian.pos.x = clamp(munchieguardian.pos.x, -15, 1980);
+    }) //clamp munchieguardian position
+
     onKeyPress("shift", () => {
         munchieguardianState = "dashing";
         if (munchieguardianDirection == RIGHT) {
@@ -106,7 +123,7 @@ export function floor2Scene() {
         } //dash trail
     }) //dash
     onKeyRelease("shift", () => {
-        wait(0.2, () => {
+        wait(1, () => {
             munchieguardianState = "idle";
         })
     })//dash over
@@ -132,25 +149,110 @@ export function floor2Scene() {
                     body({isStatic: true}),
                     color(100, 50, 10),
                 ], //platform box
+                "^": () => [
+                    rect(64, 64),
+                    opacity(0),
+                    area(),
+                    body({isStatic: true}),
+                    "spike",
+                ] //spike
             }
         })
     } 
 
-    function makeCollidingBox(boxX, boxY, boxTag) {
-        add([
-            rect(72, 72),
-            pos(boxX, boxY),
-            area(),
-            body(),
-            color(175, 80, 30),
-            boxTag,       
-        ])
+    onCollide("munchieguardian", "spike", () => {
+        shake(7);
+        wait(0.05, () => {
+            go("floor2");
+        })
+    })
+
+    class collidingBox {
+        constructor(boxX, boxY, boxTag) {
+            this.obj = add([
+                rect(72, 72),
+                pos(boxX, boxY),
+                area(),
+                body(),
+                color(175, 80, 30),
+                boxTag,                
+            ])
+        }
+    } //make new box
+
+    function addInteractiveSign(playerTag, interactiveObjectTag, interactiveItemX, interactiveItemY) {
+        onCollide(playerTag, interactiveObjectTag, () => {
+            add([
+                sprite("Ebutton"),
+                anchor("center"),
+                pos(interactiveItemX + 100, interactiveItemY - 34),
+                opacity(1),
+                lifespan(1.5, {
+                    fade: 0.5,
+                })
+            ]) //E key
+            add([
+                text("to interact"),
+                pos(interactiveItemX + 150, interactiveItemY - 50),
+                opacity(1),
+                lifespan(1.5, {
+                    fade: 0.5,
+                })                
+            ]) //E to interact text
+        })
     }
 
+    const gunBox = new collidingBox(300, 300, "gunBox");
+
+    let isGunUnlocked = false;
+
     onCollide("munchieguardian", "gunBox", () => {
-        if (munchieguardianState == "dashing") {
-            destroyAll("gunBox");
-        }
-        destroyAll("tile")
-    })
+        onClick(() => {
+            if(isGunUnlocked == false) {
+                const gunLoot = add([
+                    rect(80, 64),
+                    pos(gunBox.obj.pos),
+                    color(255, 255, 255),
+                    scale(1),
+                    anchor("center"),
+                    area(),
+                    body(),
+                    "gunLoot",
+                ])            
+                destroyAll("gunBox");
+                munchieguardianState = "attacking";
+                wait(0.5, () => {
+                    munchieguardianState = "idle";
+                }) 
+                const destroyedBoxParticleEmitter = add([
+                    pos(gunLoot.pos.x, gunLoot.pos.y),
+                    particles({
+                        max: 100,
+                        scale: 3,
+                        speed: [75, 100],
+                        lifeTime: [0.75, 1.0],
+                        opacities: [1.0, 0.0],
+                        color: gunBox.color,
+                    }, {
+                        direction: -90,
+                        spread: 45,
+                    })
+                ])
+                destroyedBoxParticleEmitter.emit(40);
+                tween(vec2(0.2), vec2(1), 0.5, (v) => (gunLoot.scale = v), easings.easeOutElastic)
+                isGunUnlocked = true;
+                //do some destruction particles and then spawn a gun
+                addInteractiveSign("munchieguardian", "gunLoot", gunLoot.pos.x, gunLoot.pos.y);
+                onKeyPress("e", () => {
+                    destroy(gunLoot);
+                    //switch munchieguardian sprite
+                }) //e to pick up the gun (then the munchieguardian will switch sprites)
+            }   
+        })
+    }) //munchieguardian can break the box on collide!
+
+
+    function yo() {
+
+    }
 }

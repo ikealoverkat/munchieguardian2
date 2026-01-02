@@ -16,6 +16,8 @@ kaplay({
 loadRoot("./"); // ts for shipping on itch
 //note 2 self: all sprites must be loaded here
 loadSprite("logo", "ui/logo.png")
+loadSprite("Ebutton", "ui/E.png")
+
 loadSprite("munchieguardian", "sprites/munchieguardian.png")
 loadSprite("bullet", "sprites/bullet.png")
 loadSprite("chargeAttackBullet", "sprites/chargeattack_bullet.png")
