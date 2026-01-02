@@ -245,14 +245,74 @@ export function floor2Scene() {
                 addInteractiveSign("munchieguardian", "gunLoot", gunLoot.pos.x, gunLoot.pos.y);
                 onKeyPress("e", () => {
                     destroy(gunLoot);
+                    wait(0.02, () => {
+                        newDialogueBox(["munchieguardianBigSprite", "munchieguardianBigSprite", "munchieguardianBigSprite", "munchieguardianBigSprite"], ["Munchie Guardian", "Munchie Guardian", "Munchie Guardian", "null"], ["A gun...?", "Yo i'm scared... who left this here?", "Ok whatever we ball", "null"]);
+                    })
                     //switch munchieguardian sprite
                 }) //e to pick up the gun (then the munchieguardian will switch sprites)
             }   
         })
     }) //munchieguardian can break the box on collide!
 
+    function newDialogueBox(characterSprites, characterName, dialogue) {
+        //all arguments are arrays
+        let curText = 1;
 
-    function yo() {
+        const charactersArray = characterSprites;
+        const dialogueArray = dialogue;
+        const characterNamesArray = characterName;
 
+        const onscreenCharacterSprite = add([
+            sprite("munchieguardianBigSprite"),
+            pos(200, 200),
+            // layer("ui"),
+        ])
+
+        const dialogueBox = add([
+            rect(width() - 200, 300),
+            pos(width()/2, height() - 200),
+            anchor("center"),
+        ]) 
+
+        const dialogueText = dialogueBox.add([
+            text(dialogueArray[curText - 1], {
+                // font: ,
+                size: 36,
+                width: 1500,
+            }),
+            pos(-750, -40),
+            color(10, 10, 100),
+        ])
+
+        const dialogueCharacterName = add([
+            text("Munchie Guardian", {
+                // font: ,
+                size: 40,
+            }),
+            pos(dialogueBox.pos.x - 750, dialogueBox.pos.y - 100),
+            color(10, 10, 100),
+            z(100),
+        ])
+
+        onClick(() => {
+            onscreenCharacterSprite.use(sprite(charactersArray[curText].toString()));
+            dialogueCharacterName.text = characterNamesArray[curText];
+
+            dialogueText.text = dialogueArray[curText];
+            if (curText > dialogueArray.length - 2) {
+                destroy(dialogueBox);
+                destroy(dialogueText);
+                destroy(dialogueCharacterName);
+                destroy(onscreenCharacterSprite);
+            } else {
+                curText++;
+            } 
+        })
+
+        //dialogueText.text = dialogueArray[curText];
+        //if dialogue istyping = true make the text dialoguearray
+        //wait 1s, stop typing (dialogueistyping = false)
+        //dialogue text 
+        // 
     }
 }

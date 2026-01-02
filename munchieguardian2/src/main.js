@@ -22,6 +22,11 @@ loadSprite("munchieguardian", "sprites/munchieguardian.png")
 loadSprite("bullet", "sprites/bullet.png")
 loadSprite("chargeAttackBullet", "sprites/chargeattack_bullet.png")
 
+//big sprites
+loadSprite("munchieguardianBigSprite", "sprites/munchieguardianBigSprite.png")
+
+// setLayers(["bg", "obj", "foreground", "ui"], "obj");
+
 scene("floor1", floor1Scene);
 
 scene("floor2", floor2Scene);
